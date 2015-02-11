@@ -1,8 +1,8 @@
 ---
 title: "Informe Desembre"
 author: "Marc Comas-Cufí"
-date: "30 Jan 2015"
-output: word_document
+date: "30 de gener del 2015"
+output: html_document
 ---
 
 ## Informe de seguiment Novembre/Desembre
