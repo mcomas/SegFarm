@@ -10,6 +10,7 @@ if(exists('Rmd_script')) ROOT = '../'
 guard_mes = read.xls(paste0(ROOT, "data/OF_Guardia_novembre-desembre.xls"), encoding= 'latin1', stringsAsFactors = F)
 suppressWarnings(rel_ofabs <- read.xls(paste0(ROOT, "data/Relacio_OF_ABS.xls"), pattern = "N.Of.", encoding= 'latin1', stringsAsFactors = F))
 res = read.xls(paste0(ROOT, "data/Resultats_Enquesta_guardies_novembre_11desembre-2.xls"), encoding= 'latin1', stringsAsFactors = F)
+nov = read.xls(paste0(ROOT, 'data/LLista_Novembre_2014_Nova.xls'), encoding = 'latin1', stringsAsFactors = F)
 
 ### Correccions inicials de les taules importades
 res$preu = ifelse(res$preu == "", '0', res$preu)

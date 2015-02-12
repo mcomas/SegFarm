@@ -1,7 +1,7 @@
 ---
 title: "Informe Desembre"
 author: "Marc Comas-Cufí"
-date: "30 de gener del 2015"
+date: "12 de febrer del 2015"
 output: html_document
 ---
 
@@ -63,7 +63,7 @@ group_by(res, tipus) %>%  summarize(
 
 La farmàcia amb número 943 s'han considerat la farmàcia 94, ja que la 93 no existeix al llistat `Relacio_OF_ABS`.
 
-### Descriptives per nit
+### Descriptives per nit (Només Novembre)
 
 ```{r, echo=FALSE, comment="    "}
 df = data.frame(
@@ -90,6 +90,38 @@ df$dispensacions[sel] = df2$dispensacions_2[sel]
 df$urgents[sel] = df2$urgents_2[sel]
 df$ingres[sel] = df2$ingres_2[sel]
 df$ingres_urgent[sel] = df2$ingres_urgent_2[sel]
+```
+
+
+Només es consideren farmàcies del Novembre
+
+```{r, echo=FALSE, comment="    "}
+### Es treuen el mes de Desembre
+sel =  month(df$data) == 11
+table(ifelse(sel, 'Novembre', 'No novembre'))
+df = df[sel, ]
+```
+
+S'eliminen farmàcies que no apareixen al llistat de participants (es mostra el comptatge del guardies que tenen cada una d'elles:
+
+```{r, echo=FALSE, comment="    "}
+sel = !(df$OFnum %in% nov$N.Of)
+addmargins(table(df$OFnum[sel]))
+# Es treuen les farmàcies que no estan al llistat (però que si que sortien a la llista de guardies)
+df = df[!sel,]
+```
+
+```{r, echo=FALSE, comment="    "}
+i.of = match(df$OFnum, nov$N.Of)
+df$participa = nov$OF_Participant[i.of]
+```
+
+Relació de guardies que entren a l'estudi
+
+```{r, echo=FALSE, comment="    "}
+sel = df$participa == 1
+table(ifelse(sel, 'Participant', 'No participant'))
+df = df[sel,]
 ```
 
 #### Nº dispensacions OF per nit
@@ -124,4 +156,24 @@ summ = function(.data) summarize(.data,
 
 df.data = group_by(df, data) %>% summ 
 df %>% summ
+```
+
+
+### Relació de farmàcies que no tenen usuaris
+
+```{r, echo=FALSE, comment="    "}
+d = group_by(df, OFnum) %>% summarize(
+  'Usuaris' = mean(usuaris),
+  'Ingres' = mean(ingres),
+  'Ingres urgent' = mean(ingres_urgent)
+  ) %>% arrange(-Usuaris)
+sel = d$Usuaris == 0
+data.frame(
+  table(ifelse(sel, 'Farmàcia sense cap usuari durant el mes', 'Farmàcia amb alguna usuari')))
+```
+
+Relació de farmàcies:
+
+```{r, echo=FALSE, comment="    "}
+data.frame(d)
 ```
