@@ -163,6 +163,7 @@ df %>% summ
 
 ```{r, echo=FALSE, comment="    "}
 d = group_by(df, OFnum) %>% summarize(
+  'Nits' = length(usuaris),
   'Usuaris' = mean(usuaris),
   'Ingres' = mean(ingres),
   'Ingres urgent' = mean(ingres_urgent)
