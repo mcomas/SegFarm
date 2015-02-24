@@ -1,65 +1,96 @@
 ---
 title: "Informe Desembre"
 author: "Marc Comas-Cufí"
-date: "23 de febrer del 2015"
-output: pdf_document
+date: "24 de febrer del 2015"
+output: html_document
 ---
 
-## Informe de seguiment Novembre/Desembre
+## Informe de seguiment Febrer
+
+* [Nº Total dispensacions i dispensacions que són urgències](#disptotal)
+* [Nº dispensacions i urgents per procedència, hora, grup terapeutic, tipus de producte i tipus farmàcia](#dispgrups)
+    + [per procedència](#perproc)
+    + [per hora](#perhora)
+    + [per grup terapeutic](#peratc)
+    + [per tipus de producte](#pertipprod)
+    + [per tipus de farmàcia](#pertipfarm)
+* [Nº dispensacions per usuari, si com a mínim 1 urgència](#dispuser)
+* [Descriptives per nit](#pernit)
+    + [Nº dispensacions OF per nit](#dispnit)
+    + [Nº usuaris per nit](#usernit)
+    + [Ingrés per OF/Nit](#ingresnit)
+    + [Relació de farmàcies que no tenen usuaris](#relfarm)
+
 
 ```{r, include=FALSE}
 Rmd_script = FALSE
 source('../R/load_data.R')
-#options(width=150)
+options(width=150)
 ```
 
-#### Nº Total dispensacions i dispensacions que són urgències
+#### <a name="disptotal" /> Nº Total dispensacions i dispensacions que són urgències
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res) %>%  summarize(
   'Dispensacions' = length(idenquesta), 
-  'Urgents' = sprintf("    %d/%d (%5.2f%%)", sum(dispensacio.urgent == 'Si'), length(idenquesta), 100*mean(dispensacio.urgent == 'Si')))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'), 100*mean(dispensacio.urgent == 'Si')))
 ```
 
-#### Procedència i hora
+#### <a name="dispgrups" />  Nº dispensacions i urgents per procedència, hora, grup terapeutic i tipus de producte
+
+* <a name="perproc" />  per procedència
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, procedencia) %>%  summarize(
-  'Dispensacions' = sprintf("%d/%d (%5.2f%%)", length(idenquesta), nrow(res), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d/%d (%5.2f%%)", sum(dispensacio.urgent == 'Si'), length(idenquesta), 100*mean(dispensacio.urgent == 'Si')))
+  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
 ```
 
-Es considera horari nocturn de 22h a les 9h.
+* <a name="perhora" /> per hora
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, h) %>%  summarize(
-  'Dispensacions' = sprintf("%d/%d (%5.2f%%)", length(idenquesta), nrow(res), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d/%d (%5.2f%%)", sum(dispensacio.urgent == 'Si'), length(idenquesta), 100*mean(dispensacio.urgent == 'Si')))
+  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
 ```
 
-L'hora apuntada de dues dispensacions (urgents) era `28:40:28`
 
-#### Nº dispensacions per usuari, si com a mínim 1 urgència
-
-* __Usuaris__: quants usuaris han passat en total
-* __Urgent__: com a mínim una dispensació urgent
-* __Prod. disp. (mitj.)__: productes dispensat en mitjana
+* <a name="peratc" /> per grup terapeutic
 
 ```{r, echo=FALSE, comment="    "}
-group_by(res, idenquesta) %>% summarize(
-  'productes' = length(idenquesta),
-  'dispensacio.urgent' = sum(dispensacio.urgent == 'Si') > 0) %>% summarize(
-    'Usuaris' = length(idenquesta),
-    'Urgents' = sprintf("    %d/%d (%5.2f%%)", sum(dispensacio.urgent), length(idenquesta), 100*mean(dispensacio.urgent)),
-    'Prod. disp. (mitj.)' = mean(productes))
+data.frame(
+  group_by(res, grup.terapeutic) %>%  summarize(
+  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si'))))
 ```
 
-#### Distribució segons tipus farmàcia
+```{r, echo=FALSE, comment="    "}
+mutate(res, 'atc' = substr(grup.terapeutic, 1, 3)) %>% group_by(atc) %>%  summarize(
+  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
+```
+
+```{r, echo=FALSE, comment="    "}
+mutate(res, 'atc' = substr(grup.terapeutic, 1, 1)) %>% group_by(atc) %>%  summarize(
+  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
+```
+
+* <a name="pertipprod" /> per tipus de producte
+
+```{r, echo=FALSE, comment="    "}
+data.frame(
+  group_by(res, tipus.producte) %>%  summarize(
+  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si'))))
+```
+
+* <a name="pertipfarm" /> per tipus de farmàcia
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, tipus) %>%  summarize(
-  'Dispensacions' = sprintf("%d/%d (%5.2f%%)", length(idenquesta), nrow(res), 100 * length(idenquesta) / nrow(res)),
-  'Urgents' = sprintf("    %d/%d (%5.2f%%)", sum(dispensacio.urgent == 'Si'), length(idenquesta), 100*mean(dispensacio.urgent == 'Si')))
+  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
 ```
 
 ```{r, echo=FALSE, comment="    "}
@@ -70,9 +101,31 @@ if( na.disp > 0 ){
 }
 ```
 
-La farmàcia amb número 943 s'han considerat la farmàcia 94, ja que la 93 no existeix al llistat `Relacio_OF_ABS`.
+#### <a name='dispuser' /> Nº dispensacions per usuari, si com a mínim 1 urgència
 
-### Descriptives per nit (Només Novembre)
+* __Usuaris/clients__: quants usuaris han passat en total
+* __Amb disp. urgent__: com a mínim una dispensació urgent
+* __Prod. disp. (mitj.)__: nombre mitjà de productes dispensat (urgents i no urgents)
+
+```{r, echo=FALSE, comment="    "}
+group_by(res, idenquesta) %>% summarize(
+  'productes' = length(idenquesta),
+  'dispensacio.urgent' = sum(dispensacio.urgent == 'Si') > 0) %>% summarize(
+    'Usuaris/clients' = length(idenquesta),
+    'Amb disp. urgent' = sprintf("    %d (%5.2f%% del total)", sum(dispensacio.urgent), length(idenquesta), 100*mean(dispensacio.urgent)),
+    'Prod. disp. (mitj.)' = mean(productes))
+```
+
+```{r, echo=FALSE, comment="    "}
+group_by(res, idenquesta) %>% summarize(
+  'productes' = length(idenquesta),
+  'dispensacio.urgent' = sum(dispensacio.urgent == 'Si') > 0) %>% summarize(
+    'Usuaris/clients' = length(idenquesta),
+    'Amb disp. urgent' = sprintf("    %d (%5.2f%% del total)", sum(dispensacio.urgent), length(idenquesta), 100*mean(dispensacio.urgent)),
+    'Prod. disp. (mitj.)' = mean(productes))
+```
+
+### <a name='pernit' /> Descriptives per nit
 
 ```{r, echo=FALSE, comment="    "}
 df = data.frame(
@@ -86,7 +139,7 @@ df$dispensacions_nit = 0
 df$urgents = 0
 df$urgents_nit = 0
 df$ingres = 0
-df$ingre_nit
+df$ingres_nit = 0
 df$ingres_urgent = 0
 df$ingres_urgent_nit = 0
 
@@ -116,13 +169,12 @@ df$ingres_urgent[sel] = df2$ingres_urgent_2[sel]
 df$ingres_urgent_nit[sel] = df2$ingres_urgent_nit_2[sel]
 ```
 
-
 Només es consideren farmàcies del Novembre
 
 ```{r, echo=FALSE, comment="    "}
 ### Es treuen el mes de Desembre
 sel =  month(df$data) == 2
-table(ifelse(sel, 'Febrer', 'No febrer'))
+table(ifelse(sel, 'Guardies del febrer', 'Guàrdies d\'altres febrer'))
 df = df[sel, ]
 ```
 
@@ -136,33 +188,33 @@ Relació de guardies que entren a l'estudi
 
 ```{r, echo=FALSE, comment="    "}
 sel1 = df$participa == 1
-table(ifelse(sel1, 'Participant', 'No participant'))
+addmargins( table(ifelse(sel1, 'Participant', 'No participant'), useNA='ifany') )
 ```
 
 Relació de guardies que entre a l'estudi i fan una guàrdia activa
 
 ```{r, echo=FALSE, comment="    "}
 sel2 = df$participa.actiu == 1
-table(ifelse(sel1, 'Participant', 'No participant'), ifelse(sel2, 'Actiu', 'No actiu'))
+addmargins( table(ifelse(sel1, 'Participant', 'No participant'), ifelse(sel2, 'Actiu', 'No actiu'), useNA='ifany') )
 df = df[sel1 & sel2,]
 ```
 
-#### Nº dispensacions OF per nit
+#### <a name='dispnit' /> Nº dispensacions OF per nit
 
 Es considera horari nocturn de 22h a les 9h.
 
 ```{r, echo=FALSE, comment="    "}
 summ = function(.data) summarize(.data,
-  'Dispensacions' = mean(dispensacions), 
-  'Dispensacions (nocturn)' = mean(dispensacions_nit), 
-  'Urgents' = mean(urgents),
-  'Urgents (nocturn)' = mean(urgents_nit))
+  'Disp. guardia' = mean(dispensacions), 
+  'Disp. guardia (nocturn)' = mean(dispensacions_nit), 
+  'Disp. urgents' = mean(urgents),
+  'Disp. urgents (nocturn)' = mean(urgents_nit))
 df.data = group_by(df, data) %>% summ 
 
 df %>% summ
 ```
 
-#### Nº usuaris per nit
+#### <a name='usernit' />  Nº usuaris per nit
 
 ```{r, echo=FALSE, comment="    "}
 summ = function(.data) summarize(.data,
@@ -173,7 +225,7 @@ df.data = group_by(df, data) %>% summ
 df %>% summ
 ```
 
-#### Ingrés per OF/Nit
+#### <a name='ingresnit' />  Ingrés per OF/Nit
 
 ```{r, echo=FALSE, comment="    "}
 summ = function(.data) summarize(.data,
@@ -187,7 +239,7 @@ df %>% summ
 ```
 
 
-### Relació de farmàcies que no tenen usuaris
+### <a name='relfarm' />  Relació de farmàcies que no tenen usuaris
 
 ```{r, echo=FALSE, comment="    "}
 d = group_by(df, OFnum) %>% summarize(
@@ -201,7 +253,7 @@ d = group_by(df, OFnum) %>% summarize(
   ) %>% arrange(-Usuaris)
 sel = d$Usuaris == 0
 data.frame(
-  table(ifelse(sel, 'Farmàcia sense cap usuari durant el mes', 'Farmàcia amb alguna usuari')))
+  table(ifelse(sel, 'Farmàcia sense cap usuari durant el mes', 'Farmàcia amb algun usuari')))
 ```
 
 Relació de farmàcies:
