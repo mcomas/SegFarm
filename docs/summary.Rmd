@@ -104,11 +104,11 @@ ggplot() + geom_bar(data=t02 %>% mutate(Disp.No.Urg. = Usuaris - Disp.Urg.) %>%
   ylab('Nombre') + theme_bw() + xlab('Usuaris amb tipus de dispensacions')
 ```
 
-# Ingresos
+# Ingresos per OF/Nit
 
 ```{r}
-ggplot() + geom_bar(data=t03 %>% mutate(Ingres.No.Urgent = Ingres - Ingres.Urgent) %>% 
-                      select(Ingres.Urgent, Ingres.No.Urgent, mes) %>% 
+ggplot() + geom_bar(data=t03 %>% mutate(Ingres.No.Urgent.Nocturn = Ingres.Nocturn - Ingres.Urgent.Nocturn) %>% 
+                      select(Ingres.Urgent.Nocturn, Ingres.No.Urgent.Nocturn, mes) %>% 
                       gather(key='tip', value = 'value', -mes), 
                     aes(x=tip, y= value, fill=mes), stat='identity', position = 'dodge') +
   ylab('Euros') + theme_bw() + xlab('Ingresos nit segons tipus de dispensacions')
