@@ -2,97 +2,94 @@
 title: "Informe Febrer"
 author: "Marc Comas-Cufí"
 date: "01 d' abril del 2015"
-output: word_document
+output: 
+  html_document: 
+    toc: yes
 ---
-
-## Informe pel seguiment del mes de Febrer
-
-* [Nº Total dispensacions i dispensacions que són urgències](#disptotal)
-* [Nº dispensacions i urgents per procedència, hora, grup terapeutic, tipus de producte i tipus farmàcia](#dispgrups)
-    + [per procedència](#perproc)
-    + [per hora](#perhora)
-    + [per grup terapeutic](#peratc)
-    + [per tipus de producte](#pertipprod)
-    + [per tipus de farmàcia](#pertipfarm)
-* [Nº dispensacions per usuari, si com a mínim 1 urgència](#dispuser)
-* [Descriptives per nit](#pernit)
-    + [Nº dispensacions OF per nit](#dispnit)
-    + [Nº usuaris per nit](#usernit)
-    + [Ingrés per OF/Nit](#ingresnit)
-    + [Relació de farmàcies que no tenen usuaris](#relfarm)
-
 
 ```{r, include=FALSE}
 Rmd_script = FALSE
-source('../R/load_data.R')
+source('../R/load_data_febrer.R')
 options(width=150)
 ```
 
-#### <a name="disptotal" /> Nº Total dispensacions i dispensacions que són urgències
+# Nº Total dispensacions i dispensacions que són urgències
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res) %>%  summarize(
-  'Dispensacions' = length(idenquesta), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'), 100*mean(dispensaciourgent == 'Si')))
+  'Disp.' = length(idenquesta),
+  'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),
+  'Disp.Urg..Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T))
 ```
 
-#### <a name="dispgrups" />  Nº dispensacions i urgents per procedència, hora, grup terapeutic i tipus de producte
+# Nº dispensacions i urgents per procedència, hora, grup terapeutic i tipus de producte
 
-* <a name="perproc" />  per procedència
+## per procedència
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, procedencia) %>%  summarize(
-  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si')))
+  'Disp.' = length(idenquesta), 
+  'Disp.Prop' = 100 * length(idenquesta) / nrow(res), 
+  'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),  
+  'Disp.Urg.Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T))
 ```
 
-* <a name="perhora" /> per hora
+## per hora
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, h) %>%  summarize(
-  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si'))) %>%
-  data.frame
+  'Disp.' = length(idenquesta), 
+  'Disp.Prop' = 100 * length(idenquesta) / nrow(res), 
+  'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),  
+  'Disp.Urg.Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T)) %>% data.frame
 ```
 
-* <a name="peratc" /> per grup terapeutic
+## per grup terapeutic
 
 Primer s'ha separat segons el codi ATC ulitzant l'especificació de 5 caràcters (A00AA). En segon s'han agrupat per (A00). Finalment sols amb la primera lletra (A).
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, grupterapeutic) %>%  summarize(
-  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si'))) %>% data.frame
+  'Disp.' = length(idenquesta), 
+  'Disp.Prop' = 100 * length(idenquesta) / nrow(res), 
+  'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),  
+  'Disp.Urg.Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T)) %>% data.frame
 ```
 
 ```{r, echo=FALSE, comment="    "}
 mutate(res, 'atc' = substr(grupterapeutic, 1, 3)) %>% group_by(atc) %>%  summarize(
-  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si'))) %>%
-  data.frame
+  'Disp.' = length(idenquesta), 
+  'Disp.Prop' = 100 * length(idenquesta) / nrow(res), 
+  'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),  
+  'Disp.Urg.Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T)) %>% data.frame
 ```
 
 ```{r, echo=FALSE, comment="    "}
 mutate(res, 'atc' = substr(grupterapeutic, 1, 1)) %>% group_by(atc) %>%  summarize(
-  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si')))
+  'Disp.' = length(idenquesta), 
+  'Disp.Prop' = 100 * length(idenquesta) / nrow(res), 
+  'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),  
+  'Disp.Urg.Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T)) %>% data.frame
 ```
 
-* <a name="pertipprod" /> per tipus de producte
+## per tipus de producte
 
 ```{r, echo=FALSE, comment="    "}
-data.frame(
-  group_by(res, tipusproducte) %>%  summarize(
-  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si'))))
+group_by(res, tipusproducte) %>%  summarize(
+  'Disp.' = length(idenquesta), 
+  'Disp.Prop' = 100 * length(idenquesta) / nrow(res), 
+  'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),  
+  'Disp.Urg.Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T)) %>% data.frame
 ```
 
-* <a name="pertipfarm" /> per tipus de farmàcia
+## per tipus de farmàcia
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, tipus) %>%  summarize(
-  'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si')))
+  'Disp.' = length(idenquesta), 
+  'Disp.Prop' = 100 * length(idenquesta) / nrow(res), 
+  'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),  
+  'Disp.Urg.Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T)) %>% data.frame
 ```
 
 ```{r, echo=FALSE, comment="    "}
@@ -103,22 +100,24 @@ if( na.disp > 0 ){
 }
 ```
 
-#### <a name='dispuser' /> Nº dispensacions per usuari, si com a mínim 1 urgència
+# Nº dispensacions per usuari, si com a mínim 1 urgència
 
-* __Usuaris/clients__: quants usuaris han passat en total
-* __Amb disp. urgent__: com a mínim una dispensació urgent
-* __Prod. disp. (mitj.)__: nombre mitjà de productes dispensat (urgents i no urgents)
+* __Usuaris__: quants usuaris han passat en total
+* __Disp.Urg.__: nombre d'usuaris amb com a mínim una dispensació urgent
+* __Disp.Urg.Prop.__: proporció d'usuaris amb com a mínim una dispensació urgent
+* __Prod.Disp.__: mitjana de productes dispensats per client (urgents i no urgents)
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, idenquesta) %>% summarize(
   'productes' = length(idenquesta),
   'dispensaciourgent' = sum(dispensaciourgent == 'Si') > 0) %>% summarize(
-    'Usuaris/clients' = length(idenquesta),
-    'Amb disp. urgent' = sprintf("    %d (%5.2f%% del total)", sum(dispensaciourgent), length(idenquesta), 100*mean(dispensaciourgent)),
-    'Prod. disp. (mitj.)' = mean(productes))
+    'Usuaris' = length(idenquesta),
+    'Disp.Urg.' = sum(dispensaciourgent, na.rm=T),  
+    'Disp.Urg.Prop.' = 100*mean(dispensaciourgent, na.rm=T),
+    'Prod.Disp.' = mean(productes, na.rm=T))
 ```
 
-### <a name='pernit' /> Descriptives per nit
+## Descriptives per nit
 
 ```{r, echo=FALSE, comment="    "}
 df = data.frame(
@@ -162,6 +161,7 @@ df$ingres_urgent[sel] = df2$ingres_urgent_2[sel]
 df$ingres_urgent_nit[sel] = df2$ingres_urgent_nit_2[sel]
 ```
 
+Nombre total de guàrdies al febrer:
 
 ```{r, echo=FALSE, comment="    "}
 ### Es treuen el mes de Desembre
@@ -173,7 +173,7 @@ df = df[sel, ]
 ```{r, echo=FALSE, comment="    "}
 i.of = match(df$OFnum, guard_mes$Num.Of)
 df$participa = guard_mes$OF.Participant[i.of]
-df$participa.actiu = as.numeric(!is.na(guard_mes$OF.activa...fa.registres.[i.of]))
+df$participa.actiu = as.numeric(!is.na(guard_mes$OF.activa[i.of]))
 ```
 
 Relació de guardies que entren a l'estudi
@@ -193,19 +193,21 @@ df = df[sel1 & sel2,]
 
 A partir d'aquí es treballarà amb `r nrow(df)` guardies.
 
-#### <a name='dispnit' /> Nº dispensacions OF per nit
+## Nº dispensacions OF per nit
 
 Nombre de dispensacions mitjanes per guàrdia.
 
 ```{r, echo=FALSE, comment="    "}
 summ = function(.data) summarize(.data,
-  'Dispensacions' = mean(dispensacions), 
-  'Urgents' = mean(urgents))
+  'Dispensacions' = mean(dispensacions, na.rm=T), 
+  'Urgents' = mean(urgents, na.rm=T))
 summ_noct = function(.data) summarize(.data,
-  'Dispensacions (nocturn)' = mean(dispensacions_nit),
-  'Urgents (nocturn)' = mean(urgents_nit))
+  'Dispensacions (nocturn)' = mean(dispensacions_nit, na.rm=T),
+  'Urgents (nocturn)' = mean(urgents_nit, na.rm=T))
 df.data = group_by(df, data) %>% summ 
+```
 
+```{r, echo=FALSE, comment="    "}
 df %>% summ
 ```
 
@@ -215,12 +217,12 @@ Consideran només els dispensacions nocturnes (dispensació entre 22h i les 9h.)
 df %>% summ_noct
 ```
 
-#### <a name='usernit' />  Nº usuaris per nit
+## Nº usuaris per nit
 
 ```{r, echo=FALSE, comment="    "}
 summ = function(.data) summarize(.data,
-  'Usuaris' = mean(usuaris),
-  'Usuaris (nocturn)' = mean(usuaris_nit))
+  'Usuaris' = mean(usuaris, na.rm=T),
+  'Usuaris (nocturn)' = mean(usuaris_nit, na.rm=T))
 
 df.data = group_by(df, data) %>% summ 
 df %>% summ
@@ -232,7 +234,7 @@ Consideran només els dispensacions nocturnes (dispensació entre 22h i les 9h.)
 df %>% summ_noct
 ```
 
-#### <a name='ingresnit' />  Ingrés per OF/Nit
+## Ingrés per OF/Nit
 
 ```{r, echo=FALSE, comment="    "}
 summ = function(.data) summarize(.data,
@@ -245,18 +247,17 @@ df.data = group_by(df, data) %>% summ
 df %>% summ
 ```
 
-
-### <a name='relfarm' />  Relació de farmàcies que no tenen usuaris
+# Relació de farmàcies que no tenen usuaris
 
 ```{r, echo=FALSE, comment="    "}
 d = group_by(df, OFnum) %>% summarize(
   'Guradies' = length(usuaris),
   'Usuaris' = mean(usuaris),
-  'Usuaris (nocturn)' = mean(usuaris_nit),
+  'Usuaris.Nocturn' = mean(usuaris_nit),
   'Ingres' = mean(ingres, na.rm=T),
-  'Ingres (nocturn)' = mean(ingres_nit, na.rm=TRUE),
-  'Ingres urgent' = mean(ingres_urgent, na.rm=T),
-  'Ingres urgent (nocturn)' = mean(ingres_urgent_nit, na.rm=TRUE)
+  'Ingres.Nocturn' = mean(ingres_nit, na.rm=TRUE),
+  'Ingres.Urgent' = mean(ingres_urgent, na.rm=T),
+  'Ingres.Urgent.Nocturn' = mean(ingres_urgent_nit, na.rm=TRUE)
   ) %>% arrange(-Usuaris)
 sel = d$Usuaris == 0
 data.frame(

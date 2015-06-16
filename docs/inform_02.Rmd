@@ -24,7 +24,7 @@ output: html_document
 
 ```{r, include=FALSE}
 Rmd_script = FALSE
-source('../R/load_data.R')
+source('../R/load_data_febrer.R')
 options(width=150)
 ```
 
@@ -33,7 +33,7 @@ options(width=150)
 ```{r, echo=FALSE, comment="    "}
 group_by(res) %>%  summarize(
   'Dispensacions' = length(idenquesta), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'), 100*mean(dispensacio.urgent == 'Si')))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'), 100*mean(dispensaciourgent == 'Si')))
 ```
 
 #### <a name="dispgrups" />  Nº dispensacions i urgents per procedència, hora, grup terapeutic i tipus de producte
@@ -43,7 +43,7 @@ group_by(res) %>%  summarize(
 ```{r, echo=FALSE, comment="    "}
 group_by(res, procedencia) %>%  summarize(
   'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si')))
 ```
 
 * <a name="perhora" /> per hora
@@ -51,7 +51,7 @@ group_by(res, procedencia) %>%  summarize(
 ```{r, echo=FALSE, comment="    "}
 group_by(res, h) %>%  summarize(
   'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si')))
 ```
 
 
@@ -59,30 +59,30 @@ group_by(res, h) %>%  summarize(
 
 ```{r, echo=FALSE, comment="    "}
 data.frame(
-  group_by(res, grup.terapeutic) %>%  summarize(
+  group_by(res, grupterapeutic) %>%  summarize(
   'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si'))))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si'))))
 ```
 
 ```{r, echo=FALSE, comment="    "}
-mutate(res, 'atc' = substr(grup.terapeutic, 1, 3)) %>% group_by(atc) %>%  summarize(
+mutate(res, 'atc' = substr(grupterapeutic, 1, 3)) %>% group_by(atc) %>%  summarize(
   'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si')))
 ```
 
 ```{r, echo=FALSE, comment="    "}
-mutate(res, 'atc' = substr(grup.terapeutic, 1, 1)) %>% group_by(atc) %>%  summarize(
+mutate(res, 'atc' = substr(grupterapeutic, 1, 1)) %>% group_by(atc) %>%  summarize(
   'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si')))
 ```
 
 * <a name="pertipprod" /> per tipus de producte
 
 ```{r, echo=FALSE, comment="    "}
 data.frame(
-  group_by(res, tipus.producte) %>%  summarize(
+  group_by(res, tipusproducte) %>%  summarize(
   'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si'))))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si'))))
 ```
 
 * <a name="pertipfarm" /> per tipus de farmàcia
@@ -90,7 +90,7 @@ data.frame(
 ```{r, echo=FALSE, comment="    "}
 group_by(res, tipus) %>%  summarize(
   'Dispensacions' = sprintf("    %d (%5.2f%% del total)", length(idenquesta), 100 * length(idenquesta) / nrow(res)), 
-  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensacio.urgent == 'Si'),  100*mean(dispensacio.urgent == 'Si')))
+  'Urgents' = sprintf("    %d (%5.2f%% de les dispensacions)", sum(dispensaciourgent == 'Si'),  100*mean(dispensaciourgent == 'Si')))
 ```
 
 ```{r, echo=FALSE, comment="    "}
@@ -110,18 +110,18 @@ if( na.disp > 0 ){
 ```{r, echo=FALSE, comment="    "}
 group_by(res, idenquesta) %>% summarize(
   'productes' = length(idenquesta),
-  'dispensacio.urgent' = sum(dispensacio.urgent == 'Si') > 0) %>% summarize(
+  'dispensaciourgent' = sum(dispensaciourgent == 'Si') > 0) %>% summarize(
     'Usuaris/clients' = length(idenquesta),
-    'Amb disp. urgent' = sprintf("    %d (%5.2f%% del total)", sum(dispensacio.urgent), length(idenquesta), 100*mean(dispensacio.urgent)),
+    'Amb disp. urgent' = sprintf("    %d (%5.2f%% del total)", sum(dispensaciourgent), length(idenquesta), 100*mean(dispensaciourgent)),
     'Prod. disp. (mitj.)' = mean(productes))
 ```
 
 ```{r, echo=FALSE, comment="    "}
 group_by(res, idenquesta) %>% summarize(
   'productes' = length(idenquesta),
-  'dispensacio.urgent' = sum(dispensacio.urgent == 'Si') > 0) %>% summarize(
+  'dispensaciourgent' = sum(dispensaciourgent == 'Si') > 0) %>% summarize(
     'Usuaris/clients' = length(idenquesta),
-    'Amb disp. urgent' = sprintf("    %d (%5.2f%% del total)", sum(dispensacio.urgent), length(idenquesta), 100*mean(dispensacio.urgent)),
+    'Amb disp. urgent' = sprintf("    %d (%5.2f%% del total)", sum(dispensaciourgent), length(idenquesta), 100*mean(dispensaciourgent)),
     'Prod. disp. (mitj.)' = mean(productes))
 ```
 
@@ -129,8 +129,8 @@ group_by(res, idenquesta) %>% summarize(
 
 ```{r, echo=FALSE, comment="    "}
 df = data.frame(
-  'data' = guard_mes$Dia,
-  'OFnum' = guard_mes$Num.Of)
+  'data' = guard_mes$dia,
+  'OFnum' = guard_mes$num)
 
 df$usuaris = 0
 df$usuaris_nit = 0
@@ -148,12 +148,12 @@ disp = group_by(res, OFnum, data) %>% summarize(
   'usuaris_nit_2' = length(unique(idenquesta[horari == "nocturn (22h-9h)"])),
   'dispensacions_2' = length(idenquesta),
   'dispensacions_nit_2' = sum(horari == "nocturn (22h-9h)"),
-  'urgents_2' = sum(dispensacio.urgent == 'Si'),
-  'urgents_nit_2' = sum(dispensacio.urgent == 'Si' & horari == "nocturn (22h-9h)"),
-  'ingres_2' = sum(PVP),
-  'ingres_nit_2' = sum(PVP[horari == "nocturn (22h-9h)"]),
-  'ingres_urgent_2' = sum(PVP[dispensacio.urgent == 'Si']),
-  'ingres_urgent_nit_2' = sum(PVP[dispensacio.urgent == 'Si' & horari == "nocturn (22h-9h)"]))
+  'urgents_2' = sum(dispensaciourgent == 'Si'),
+  'urgents_nit_2' = sum(dispensaciourgent == 'Si' & horari == "nocturn (22h-9h)"),
+  'ingres_2' = sum(preu),
+  'ingres_nit_2' = sum(preu[horari == "nocturn (22h-9h)"]),
+  'ingres_urgent_2' = sum(preu[dispensaciourgent == 'Si']),
+  'ingres_urgent_nit_2' = sum(preu[dispensaciourgent == 'Si' & horari == "nocturn (22h-9h)"]))
 
 df2 = left_join(df, disp, by = c('data', 'OFnum'))
 sel = !is.na(df2$usuaris_2)
@@ -179,9 +179,9 @@ df = df[sel, ]
 ```
 
 ```{r, echo=FALSE, comment="    "}
-i.of = match(df$OFnum, guard_mes$Num.Of)
-df$participa = guard_mes$OF_Participant[i.of]
-df$participa.actiu = as.numeric(!is.na(guard_mes$Registre.[i.of]))
+i.of = match(df$OFnum, guard_mes$num)
+df$participa = guard_mes$of.part[i.of]
+df$participa.actiu = as.numeric(!is.na(guard_mes$of.activa[i.of]))
 ```
 
 Relació de guardies que entren a l'estudi
@@ -205,10 +205,10 @@ Es considera horari nocturn de 22h a les 9h.
 
 ```{r, echo=FALSE, comment="    "}
 summ = function(.data) summarize(.data,
-  'Disp. guardia' = mean(dispensacions), 
-  'Disp. guardia (nocturn)' = mean(dispensacions_nit), 
-  'Disp. urgents' = mean(urgents),
-  'Disp. urgents (nocturn)' = mean(urgents_nit))
+  'Disp. guardia' = mean(dispensacions, na.rm = T), 
+  'Disp. guardia (nocturn)' = mean(dispensacions_nit, na.rm=T), 
+  'Disp. urgents' = mean(urgents, na.rm = T),
+  'Disp. urgents (nocturn)' = mean(urgents_nit, na.rm = T))
 df.data = group_by(df, data) %>% summ 
 
 df %>% summ
