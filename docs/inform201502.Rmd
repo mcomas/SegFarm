@@ -19,7 +19,8 @@ options(width=150)
 group_by(res) %>%  summarize(
   'Disp.' = length(idenquesta),
   'Disp.Urg.' = sum(dispensaciourgent == 'Si', na.rm=T),
-  'Disp.Urg..Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T))
+  'Disp.Urg..Prop' = 100*mean(dispensaciourgent == 'Si', na.rm=T),
+  'Disp.Perd' = sum(is.na(dispensaciourgent == 'Si')))
 ```
 
 # Nº dispensacions i urgents per procedència, hora, grup terapeutic i tipus de producte
