@@ -1,0 +1,115 @@
+---
+title: "Summary"
+author: "Marc Comas-Cufí"
+date: "16 Jun 2015"
+output: html_document
+---
+
+```{r, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+knitr::opts_chunk$set(echo=F, fig.width=6, fig.height=4)
+ptrn = '../data/tables_%s.RData'
+t01 = lapply(c('febrer', 'maig'), function(mes){
+  load(file=sprintf(ptrn, mes))
+  t01 %>% mutate(mes = mes)
+}) %>% bind_rows
+
+t01.hora = lapply(c('febrer', 'maig'), function(mes){
+  load(file=sprintf(ptrn, mes))
+  t01.hora %>% mutate(mes = mes)
+}) %>% bind_rows
+
+t01.grup = lapply(c('febrer', 'maig'), function(mes){
+  load(file=sprintf(ptrn, mes))
+  t01.grup %>% mutate(mes = mes)
+}) %>% bind_rows
+
+t01.proc = lapply(c('febrer', 'maig'), function(mes){
+  load(file=sprintf(ptrn, mes))
+  t01.proc %>% mutate(mes = mes)
+}) %>% bind_rows
+
+t01.tip = lapply(c('febrer', 'maig'), function(mes){
+  load(file=sprintf(ptrn, mes))
+  t01.tip %>% mutate(mes = mes)
+}) %>% bind_rows
+
+t01.farm = lapply(c('febrer', 'maig'), function(mes){
+  load(file=sprintf(ptrn, mes))
+  t01.farm %>% mutate(mes = mes)
+}) %>% bind_rows
+
+t02 = lapply(c('febrer', 'maig'), function(mes){
+  load(file=sprintf(ptrn, mes))
+  t02 %>% mutate(mes = mes)
+}) %>% bind_rows
+
+t03 = lapply(c('febrer', 'maig'), function(mes){
+  load(file=sprintf(ptrn, mes))
+  t03 %>% mutate(mes = mes)
+}) %>% bind_rows
+```
+
+# Dispensacions
+
+```{r}
+ggplot() + geom_bar(data=t01, aes(x=mes, y= Disp., fill=mes), stat='identity', position = 'dodge') +
+  xlab('Dispensacions') + ylab('Nombre') + theme_bw()
+```
+
+# Procedència
+
+```{r}
+ggplot() + geom_bar(data=t01.proc, aes(x=procedencia, y= Disp., fill=mes), stat='identity', position = 'dodge') +
+  ylab('Dispensacions') + theme_bw()
+```
+
+# Hora
+
+```{r}
+ggplot() + geom_bar(data=t01.hora, aes(x=h, y= Disp., fill=mes), stat='identity', position = 'dodge') +
+  ylab('Dispensacions') + theme_bw()
+```
+
+# Grup 
+
+```{r}
+ggplot() + geom_bar(data=t01.grup, aes(x=atc, y= Disp., fill=mes), stat='identity', position = 'dodge') +
+  ylab('Dispensacions') + theme_bw()
+```
+
+# Tipus producte
+
+```{r}
+ggplot() + geom_bar(data=t01.tip, aes(x=tipusproducte, y= Disp., fill=mes), stat='identity', position = 'dodge') +
+  ylab('Dispensacions') + theme_bw()
+```
+
+# Tipus farmàcia
+
+```{r}
+ggplot() + geom_bar(data=t01.farm, aes(x=tipus, y= Disp., fill=mes), stat='identity', position = 'dodge') +
+  ylab('Dispensacions') + theme_bw()
+```
+
+# Nombre usuaris amb tipus de dispensacions
+
+```{r}
+ggplot() + geom_bar(data=t02 %>% mutate(Disp.No.Urg. = Usuaris - Disp.Urg.) %>% 
+                      select(Disp.Urg., Disp.No.Urg., mes) %>% 
+                      gather(key='tip', value = 'value', -mes), 
+                    aes(x=tip, y= value, fill=mes), stat='identity', position = 'dodge') +
+  ylab('Nombre') + theme_bw() + xlab('Usuaris amb tipus de dispensacions')
+```
+
+# Ingresos
+
+```{r}
+ggplot() + geom_bar(data=t03 %>% mutate(Ingres.No.Urgent = Ingres - Ingres.Urgent) %>% 
+                      select(Ingres.Urgent, Ingres.No.Urgent, mes) %>% 
+                      gather(key='tip', value = 'value', -mes), 
+                    aes(x=tip, y= value, fill=mes), stat='identity', position = 'dodge') +
+  ylab('Euros') + theme_bw() + xlab('Ingresos nit segons tipus de dispensacions')
+```

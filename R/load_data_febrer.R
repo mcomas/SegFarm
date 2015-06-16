@@ -10,7 +10,8 @@ if(exists('Rmd_script')) ROOT = '../'
 #Guardies del mes
 guard_mes = read_excel(paste0(ROOT, "data/2015-02/OF_Participants_Enq_Guardies_Febrer.xls"), 
                        col_names = c('Dia', 'Num.Of', 'rsocial', 'tel', 'email', 'mun', 'OF.Participant', 'OF.activa'), 
-                       col_types = c('date', 'numeric', 'text', 'text', 'text', 'text', 'numeric', 'numeric'), skip=1)
+                       col_types = c('date', 'numeric', 'text', 'text', 'text', 'text', 'numeric', 'numeric'), skip=1) %>%
+  mutate(Dia = as.Date(Dia))
 
 rel_ofabs = read_excel(paste0(ROOT, "data/Relacio_OF_ABS.xls"), skip=1) %>% setNames( c('count', 'num', 'nom', 'tef', 'abs', 'tipus') )
 rel_ofabs = rbind(rel_ofabs,
@@ -23,6 +24,7 @@ res = read_excel(paste0(ROOT, "data/2015-02/Enquesta_guardies_febrer.xls")) %>%
              "numproducte", "tipus", "codi", "descripcio", "preu", "receptamedica", "dispensaciourgent",
              "tipusproducte", "criteriurgencia", "numunitats", "grupterapeutic")) %>%
   mutate(
+    data = as.Date(data),
     OFnum = as.numeric(OFnum),
     hora2 = as.numeric(str_sub(hora, 1, 2)),
     horari = ifelse( 22 <= hora2 | hora2 <= 8, 'nocturn (22h-9h)', 'diurn (9h-22h)'),

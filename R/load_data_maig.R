@@ -1,4 +1,4 @@
-library(gdata)
+library(readxl)
 library(lubridate)
 library(dplyr)
 library(reshape2)
@@ -8,21 +8,26 @@ ROOT = ''
 if(exists('Rmd_script')) ROOT = '../'
 
 #Guardies del mes
-guard_mes = read.xls(paste0(ROOT, "data/2015-05/Llista OF_Participants_Enq_Guardies_Maig_15_mod.xls"), encoding='latin1', stringsAsFactors = F)
-guard_mes = guard_mes %>% mutate(
-  Dia = as.Date(as.character(Dia), "%m/%d/%Y"))
+guard_mes = read_excel(paste0(ROOT, "data/2015-05/Llista OF_Participants_Enq_Guardies_Maig_15_mod.xls"), 
+                       col_names = c('Dia', 'Num.Of', 'rsocial', 'tel', 'email', 'mun', 'OF.Participant', 'OF.activa'), 
+                       col_types = c('numeric', 'numeric', 'text', 'text', 'text', 'text', 'numeric', 'numeric'), skip=1) %>%
+  mutate(Dia = as.Date(Dia, origin = "1899-12-30"))
 
-
-rel_ofabs <- read.xls(paste0(ROOT, "data/Relacio_OF_ABS.xls"), pattern = "N.Of.", encoding= 'latin1', stringsAsFactors = F)
+rel_ofabs = read_excel(paste0(ROOT, "data/Relacio_OF_ABS.xls"), skip=1) %>% setNames( c('count', 'num', 'nom', 'tef', 'abs', 'tipus') )
 rel_ofabs = rbind(rel_ofabs,
                   c(NA,126,NA, NA,NA,"Urbanes",  NA,  NA,  NA),
                   c(NA,351,NA, NA,NA,"Semiurbana",  NA,  NA,  NA))
-#Dispensacions del mes
-res = read.xls(paste0(ROOT, "data/2015-05/Enquesta_guardies_maig_01_31.xls"), encoding= 'latin1', stringsAsFactors = F)
-res = res %>% mutate(
-  data = as.Date(data, "%Y-%m-%d"),
-  hora = as.numeric(str_sub(hora, 1, 2)),
-  horari = ifelse( 22 <= hora | hora <= 8, 'nocturn (22h-9h)', 'diurn (9h-22h)'),
-  h = factor(str_sub(res$hora, 1, 2), levels=sprintf("%02d", c(9:23, 0:8))),
-  tipus = rel_ofabs$Tipus.ABS[match(OFnum, rel_ofabs$N.Of.)])
 
+#Dispensacions del mes
+res = read_excel(paste0(ROOT, "data/2015-05/Enquesta_guardies_maig_01_31.xls")) %>%
+  setNames(c("idenquesta", "OFnum", "data", "hora", "sensedispensacio", "procedencia", "observacions",
+             "numproducte", "tipus", "codi", "descripcio", "preu", "receptamedica", "dispensaciourgent",
+             "tipusproducte", "criteriurgencia", "numunitats", "grupterapeutic")) %>%
+  mutate(
+    data = as.Date(data),
+    OFnum = as.numeric(OFnum),
+    hora2 = as.numeric(str_sub(hora, 1, 2)),
+    horari = ifelse( 22 <= hora2 | hora2 <= 8, 'nocturn (22h-9h)', 'diurn (9h-22h)'),
+    h = factor(str_sub(hora, 1, 2), levels=sprintf("%02d", c(9:23, 0:8))),
+    tipus = rel_ofabs$tipus[match(OFnum, rel_ofabs$num)]
+  )
