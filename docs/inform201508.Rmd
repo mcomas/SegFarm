@@ -1,7 +1,7 @@
 ---
-title: "Informe Febrer"
+title: "Informe Agost"
 author: "Marc Comas-Cufí"
-date: "01 d' abril del 2015"
+date: "10 d'octubre del 2015"
 output: 
   html_document: 
     toc: yes
@@ -9,7 +9,7 @@ output:
 
 ```{r, include=FALSE}
 Rmd_script = FALSE
-source('../R/load_data_febrer.R')
+source('../R/load_data_agost.R')
 options(width=150)
 ```
 
@@ -169,7 +169,7 @@ df$ingres_urgent[sel] = df2$ingres_urgent_2[sel]
 df$ingres_urgent_nit[sel] = df2$ingres_urgent_nit_2[sel]
 ```
 
-Nombre total de guàrdies al febrer:
+Nombre total de guàrdies al maig:
 
 ```{r, echo=FALSE, comment="    "}
 #i.of = match(df$OFnum, guard_mes$Num.Of)
@@ -179,8 +179,8 @@ df$participa.actiu = as.numeric(!is.na(guard_mes$OF.activa))
 
 ```{r, echo=FALSE, comment="    "}
 ### Es treuen el mes de Desembre
-sel =  month(df$data) == 2
-table(ifelse(sel, 'Guardies del febrer', 'Guàrdies d\'altres febrer'))
+sel =  month(df$data) == 8
+table(ifelse(sel, 'Guardies d\'agost', 'Guàrdies d\'altres mesos'))
 df = df[sel, ]
 ```
 
@@ -261,7 +261,7 @@ df.data = group_by(df, data) %>% summ
 
 ```{r, echo=FALSE, comment="    "}
 d = group_by(df, OFnum) %>% summarize(
-  'Guradies' = length(usuaris),
+  'Guardies' = length(usuaris),
   'Usuaris' = mean(usuaris),
   'Usuaris.Nocturn' = mean(usuaris_nit),
   'Ingres' = mean(ingres, na.rm=T),
@@ -281,5 +281,5 @@ round(data.frame(d), 2)
 ```
 
 ```{r, echo=FALSE, comment=""}
-save(t01, t01.hora, t01.proc, t01.grup, t01.tip, t01.farm, t02, t03, file='../data/tables_febrer.RData')
+save(t01, t01.hora, t01.proc, t01.grup, t01.tip, t01.farm, t02, t03, file='../data/tables_agost.RData')
 ```

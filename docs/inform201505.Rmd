@@ -172,17 +172,19 @@ df$ingres_urgent_nit[sel] = df2$ingres_urgent_nit_2[sel]
 Nombre total de guàrdies al maig:
 
 ```{r, echo=FALSE, comment="    "}
+#i.of = match(df$OFnum, guard_mes$Num.Of)
+df$participa = guard_mes$OF.Participant
+df$participa.actiu = as.numeric(!is.na(guard_mes$OF.activa))
+```
+
+```{r, echo=FALSE, comment="    "}
 ### Es treuen el mes de Desembre
 sel =  month(df$data) == 5
 table(ifelse(sel, 'Guardies del maig', 'Guàrdies d\'altres maig'))
 df = df[sel, ]
 ```
 
-```{r, echo=FALSE, comment="    "}
-i.of = match(df$OFnum, guard_mes$Num.Of)
-df$participa = guard_mes$OF.Participant[i.of]
-df$participa.actiu = as.numeric(!is.na(guard_mes$OF.activa[i.of]))
-```
+
 
 Relació de guardies que entren a l'estudi
 

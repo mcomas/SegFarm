@@ -6,50 +6,51 @@ output: html_document
 ---
 
 ```{r, include=FALSE}
+MESOS = c('febrer', 'maig', 'agost')
 library(ggplot2)
 library(dplyr)
 library(tidyr)
 knitr::opts_chunk$set(echo=F, fig.width=6, fig.height=4)
 ptrn = '../data/tables_%s.RData'
-t01 = lapply(c('febrer', 'maig'), function(mes){
+t01 = lapply(MESOS, function(mes){
   load(file=sprintf(ptrn, mes))
   t01 %>% mutate(mes = mes)
-}) %>% bind_rows
+}) %>% bind_rows %>% mutate(mes = factor(mes, levels=MESOS))
 
-t01.hora = lapply(c('febrer', 'maig'), function(mes){
+t01.hora = lapply(MESOS, function(mes){
   load(file=sprintf(ptrn, mes))
   t01.hora %>% mutate(mes = mes)
-}) %>% bind_rows
+}) %>% bind_rows %>% mutate(mes = factor(mes, levels=MESOS))
 
-t01.grup = lapply(c('febrer', 'maig'), function(mes){
+t01.grup = lapply(MESOS, function(mes){
   load(file=sprintf(ptrn, mes))
   t01.grup %>% mutate(mes = mes)
-}) %>% bind_rows
+}) %>% bind_rows %>% mutate(mes = factor(mes, levels=MESOS))
 
-t01.proc = lapply(c('febrer', 'maig'), function(mes){
+t01.proc = lapply(MESOS, function(mes){
   load(file=sprintf(ptrn, mes))
   t01.proc %>% mutate(mes = mes)
-}) %>% bind_rows
+}) %>% bind_rows %>% mutate(mes = factor(mes, levels=MESOS))
 
-t01.tip = lapply(c('febrer', 'maig'), function(mes){
+t01.tip = lapply(MESOS, function(mes){
   load(file=sprintf(ptrn, mes))
   t01.tip %>% mutate(mes = mes)
-}) %>% bind_rows
+}) %>% bind_rows %>% mutate(mes = factor(mes, levels=MESOS))
 
-t01.farm = lapply(c('febrer', 'maig'), function(mes){
+t01.farm = lapply(MESOS, function(mes){
   load(file=sprintf(ptrn, mes))
   t01.farm %>% mutate(mes = mes)
-}) %>% bind_rows
+}) %>% bind_rows %>% mutate(mes = factor(mes, levels=MESOS))
 
-t02 = lapply(c('febrer', 'maig'), function(mes){
+t02 = lapply(MESOS, function(mes){
   load(file=sprintf(ptrn, mes))
   t02 %>% mutate(mes = mes)
-}) %>% bind_rows
+}) %>% bind_rows %>% mutate(mes = factor(mes, levels=MESOS))
 
-t03 = lapply(c('febrer', 'maig'), function(mes){
+t03 = lapply(MESOS, function(mes){
   load(file=sprintf(ptrn, mes))
   t03 %>% mutate(mes = mes)
-}) %>% bind_rows
+}) %>% bind_rows %>% mutate(mes = factor(mes, levels=MESOS))
 ```
 
 # Dispensacions
