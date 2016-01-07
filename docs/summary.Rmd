@@ -1,12 +1,17 @@
 ---
 title: "Summary"
 author: "Marc Comas-Cufí"
-date: "16 Jun 2015"
-output: html_document
+output: 
+  html_document: 
+    toc: yes
+  word_document:
+    reference_docx: style.docx
+  pdf_document:
+    toc: yes
 ---
 
 ```{r, include=FALSE}
-MESOS = c('febrer', 'maig', 'agost')
+MESOS = c('febrer', 'maig', 'agost', 'novembre')
 library(ggplot2)
 library(dplyr)
 library(tidyr)

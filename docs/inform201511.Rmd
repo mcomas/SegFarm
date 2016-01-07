@@ -1,7 +1,7 @@
 ---
-title: "Informe Maig"
+title: "Informe Novembre"
 author: "Marc Comas-Cufí"
-date: "16 de juny del 2015"
+date: "7 de gener del 2016"
 output: 
   html_document: 
     toc: yes
@@ -13,7 +13,7 @@ output:
 
 ```{r, include=FALSE}
 Rmd_script = FALSE
-source('../R/load_data_maig.R')
+source('../R/load_data_novembre.R')
 options(width=150)
 ```
 
@@ -183,8 +183,8 @@ df$participa.actiu = as.numeric(!is.na(guard_mes$OF.activa))
 
 ```{r, echo=FALSE, comment="    "}
 ### Es treuen el mes de Desembre
-sel =  month(df$data) == 5
-table(ifelse(sel, 'Guardies del maig', 'Guàrdies d\'altres maig'))
+sel =  month(df$data) == 11
+table(ifelse(sel, 'Guardies de novembre', 'Guàrdies d\'altres mesos'))
 df = df[sel, ]
 ```
 
@@ -285,5 +285,5 @@ round(data.frame(d), 2)
 ```
 
 ```{r, echo=FALSE, comment=""}
-save(t01, t01.hora, t01.proc, t01.grup, t01.tip, t01.farm, t02, t03, file='../data/tables_maig.RData')
+save(t01, t01.hora, t01.proc, t01.grup, t01.tip, t01.farm, t02, t03, file='../data/tables_novembre.RData')
 ```

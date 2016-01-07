@@ -1,0 +1,14 @@
+---
+output: html_document
+---
+
+# Informes seguiment 2015
+
+  * Resum dels informes [[html]](summary.html) [[pdf]](summary.pdf) [[docx]](summary.docx)
+  
+******
+
+  * Informe febrer [[html]](inform201502.html) [[pdf]](inform201502.pdf) [[docx]](inform201502.docx)
+  * Informe maig [[html]](inform201505.html) [[pdf]](inform201505.pdf) [[docx]](inform201505.docx)
+  * Informe agost [[html]](inform201508.html) [[pdf]](inform201508.pdf) [[docx]](inform201508.docx)
+  * Informe novembre [[html]](inform201511.html) [[pdf]](inform201511.pdf) [[docx]](inform201511.docx)

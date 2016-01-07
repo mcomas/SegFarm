@@ -5,6 +5,10 @@ date: "01 d' abril del 2015"
 output: 
   html_document: 
     toc: yes
+  word_document:
+    reference_docx: style.docx
+  pdf_document:
+    toc: yes
 ---
 
 ```{r, include=FALSE}
@@ -261,13 +265,13 @@ df.data = group_by(df, data) %>% summ
 
 ```{r, echo=FALSE, comment="    "}
 d = group_by(df, OFnum) %>% summarize(
-  'Guradies' = length(usuaris),
+  'Guardies' = length(usuaris),
   'Usuaris' = mean(usuaris),
-  'Usuaris.Nocturn' = mean(usuaris_nit),
+  'Usuaris.Noct.' = mean(usuaris_nit),
   'Ingres' = mean(ingres, na.rm=T),
-  'Ingres.Nocturn' = mean(ingres_nit, na.rm=TRUE),
-  'Ingres.Urgent' = mean(ingres_urgent, na.rm=T),
-  'Ingres.Urgent.Nocturn' = mean(ingres_urgent_nit, na.rm=TRUE)
+  'Ing.Noct.' = mean(ingres_nit, na.rm=TRUE),
+  'Ing.Urg.' = mean(ingres_urgent, na.rm=T),
+  'Ing.Urg.Noct.' = mean(ingres_urgent_nit, na.rm=TRUE)
   ) %>% arrange(-Usuaris)
 sel = d$Usuaris == 0
 data.frame(

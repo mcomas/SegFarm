@@ -4,8 +4,8 @@ library(dplyr)
 library(reshape2)
 library(stringr)
 
-ROOT = ''
-if(exists('Rmd_script')) ROOT = '../'
+ROOT = '../'
+#if(exists('Rmd_script')) ROOT = '../'
 
 #Guardies del mes
 guard_mes = read_excel(paste0(ROOT, "data/2015-05/Llista OF_Participants_Enq_Guardies_Maig_15_mod.xls"), 
